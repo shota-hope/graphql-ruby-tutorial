@@ -1,0 +1,36 @@
+# このワークフローはGitHubによって認定されていないアクションを使用します。
+# それらはサードパーティによって提供され、
+# 別個の利用規約、プライバシーポリシー、
+# ドキュメントを参照してください。
+
+# GitHub では、コミット SHA にアクションをピン留めすることが推奨されます。
+# 新しいバージョンを取得するには、SHA を更新する必要があります。
+# タグまたはブランチを参照することもできますが、アクションは警告なしに変更される可能性があります。
+
+name: Ruby CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby-version: ['3.1', '3.0', '2.7']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rake
